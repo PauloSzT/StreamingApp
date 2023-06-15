@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -30,6 +32,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.example.streaming.R
 
 @Composable
@@ -47,6 +52,8 @@ fun HomeScreenContent(
     val searchValue by homeScreenUiState.searchValue.collectAsState()
     val isLoading by homeScreenUiState.isLoading.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val paginatedSongProvider by homeScreenUiState.paginatedSongProvider.collectAsState()
+    val paginatedSongs = paginatedSongProvider?.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -85,27 +92,25 @@ fun HomeScreenContent(
             if (isLoading) {
                 LoadingScreen()
             } else {
-//                if (paginatedAnimes != null && paginatedAnimes.itemCount > 0) {
-//                    LazyVerticalGrid(columns = GridCells.Fixed(1)) {
-//                        items(
-//                            count = paginatedAnimes.itemCount,
-//                            key = paginatedAnimes.itemKey(),
-//                            contentType = paginatedAnimes.itemContentType()
-//                        ) { index ->
-//                            val item = paginatedAnimes[index]
-//                            item?.let { resultAnime ->
-//                                SearchItemCard(
-//                                    uiAnimeListItem = resultAnime,
-//                                    favoritesIdsState = favoriteIds,
-//                                    onFavoriteClick = searchUiState.onFavoriteClick,
-//                                    navigateToDetails = { navigateToDetails(resultAnime.id) }
-//                                )
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    NoResult()
-//                }
+                if (paginatedSongs != null && paginatedSongs.itemCount > 0) {
+                    LazyVerticalGrid(columns = GridCells.Fixed(1)) {
+                        items(
+                            count = paginatedSongs.itemCount,
+                            key = paginatedSongs.itemKey(),
+                            contentType = paginatedSongs.itemContentType()
+                        ) { index ->
+                            val item = paginatedSongs[index]
+                            item?.let { resultSong ->
+                                SearchItemCard(
+                                    uiSearchResultSong = resultSong,
+                                    navigateToDetails = { }
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    NoResult()
+                }
             }
         }
     }

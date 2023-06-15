@@ -1,13 +1,17 @@
 package com.example.streaming.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.example.core.usecases.remote.getsongsbysearchusecase.GetSongsBySearchUseCase
 import com.example.streaming.ui.utils.UiConstants.EMPTY_STRING
+import com.example.streaming.ui.utils.mapToUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,19 +22,34 @@ class HomeScreenViewModel @Inject constructor(
     private val isLoading = MutableStateFlow(false)
     private val searchValue = MutableStateFlow(EMPTY_STRING)
     private val searchValueExecutor = MutableStateFlow(EMPTY_STRING)
-
-
-    init {
-        viewModelScope.launch {
-                getSongsBySearchUseCase("music", "1")?.results?.forEach { item ->
-                    Log.wtf("paulocode", "$item")
+    private val paginatedSongProvider = searchValueExecutor.map { query ->
+        if(query.isNotEmpty()){
+            Pager(
+                initialKey = null,
+                config = PagingConfig(
+                    pageSize = 50,
+                    enablePlaceholders = false,
+                    prefetchDistance = 1
+                ),
+                pagingSourceFactory = {
+                    SongPagingSource({ isLoading.value = false }) { page ->
+                        getSongsBySearchUseCase(
+                            page.toString(),
+                            query
+                        )?.mapToUiModel()
+                    }
                 }
+            ).flow
+        }else{
+            null
         }
-    }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+
 
     val homeScreenUiState = HomeScreenUiState(
         searchValue = searchValue,
         isLoading = isLoading,
+        paginatedSongProvider = paginatedSongProvider,
         onQueryChange = ::onQueryChange,
         onImeActionClick = ::onImeActionClick
     )

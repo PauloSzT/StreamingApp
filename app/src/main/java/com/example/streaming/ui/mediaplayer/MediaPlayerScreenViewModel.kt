@@ -10,11 +10,6 @@ import javax.inject.Inject
 class MediaPlayerScreenViewModel@Inject constructor(): ViewModel() {
     private val songMediaItem: MutableStateFlow<UiSongMedia?> = MutableStateFlow(null)
 
-//    init {
-//        viewModelScope.launch {
-//        }
-//    }
-
     val mediaPlayerUiState = MediaPlayerUiState(
 
     )
