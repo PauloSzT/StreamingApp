@@ -32,8 +32,9 @@ import com.example.streaming.ui.theme.StreamingAppTheme
 import com.example.streaming.ui.navigation.NavItem
 import com.example.streaming.ui.navigation.NavItem.Companion.title
 import com.example.streaming.ui.utils.UiConstants.EMPTY_STRING
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {

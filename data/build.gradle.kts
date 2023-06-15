@@ -39,6 +39,7 @@ android {
 dependencies {
 
     val daggerHiltVersion = "2.44"
+    val media3Version = "1.0.2"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -51,6 +52,33 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     kapt ("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
     kapt ("androidx.hilt:hilt-compiler:1.0.0")
+
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    // Retrofit with Kotlin serialization Converter
+    implementation ("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+
+    // Interceptor
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+
+    // Kotlin serialization
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+    // Media3
+    implementation ("androidx.media3:media3-exoplayer:$media3Version")
+    // For DASH playback support with ExoPlayer
+    implementation("androidx.media3:media3-exoplayer-dash:$media3Version")
+    // For HLS playback support with ExoPlayer
+    implementation("androidx.media3:media3-exoplayer-hls:$media3Version")
+    // For RTSP playback support with ExoPlayer
+    implementation("androidx.media3:media3-exoplayer-rtsp:$media3Version")
+    // For ad insertion using the Interactive Media Ads SDK with ExoPlayer
+    implementation("androidx.media3:media3-exoplayer-ima:$media3Version")
+    // For scheduling background operations using Jetpack Work's WorkManager with ExoPlayer
+    implementation("androidx.media3:media3-exoplayer-workmanager:$media3Version")
+    // For exposing and controlling media sessions
+    implementation("androidx.media3:media3-session:$media3Version")
+
 
     implementation(project(":core"))
 }
