@@ -29,7 +29,7 @@ fun NavigationGraph(
             MediaPlayerScreen()
         }
         composable(route = NavItem.HomeScreen.route) {
-            HomeScreen()
+            HomeScreen(navHostController = navHostController)
         }
     }
 }

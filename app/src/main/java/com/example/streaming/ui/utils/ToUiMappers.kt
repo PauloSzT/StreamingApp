@@ -14,13 +14,15 @@ fun CoreSearchResult.mapToUiModel(): UiSearchResult = UiSearchResult(
 
 fun CoreSearchResultSong.mapToUiModel(): UiSearchResultSong = UiSearchResultSong(
     id = id,
-    name = name
+    name = name,
+    username = username
 )
 
 fun CoreSongMedia.mapToUiModel(): UiSongMedia = UiSongMedia(
     id = id,
     name = name,
-    duration= duration,
-    previews = previews,
-    images = images
+    duration = duration,
+    username = username,
+    preview = previews,
+    image = images
 )

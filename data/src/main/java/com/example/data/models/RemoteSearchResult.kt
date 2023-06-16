@@ -11,5 +11,6 @@ data class RemoteSearchResult(
 @Serializable
 data class RemoteSearchResultSong(
     val id: Int,
-    val name: String
+    val name: String,
+    val username: String
 )

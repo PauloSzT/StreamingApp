@@ -32,22 +32,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.example.streaming.R
+import com.example.streaming.ui.navigation.NavItem
 
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
-){
-    HomeScreenContent(viewModel.homeScreenUiState)
+    navHostController: NavHostController
+) {
+    HomeScreenContent(viewModel.homeScreenUiState) { songId ->
+        navHostController.navigate(NavItem.MediaPlayerScreen.routeWithArgs(songId))
+
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreenContent(
-    homeScreenUiState: HomeScreenUiState
+    homeScreenUiState: HomeScreenUiState,
+    navigateToMediaPlayer: (Int) -> Unit
 ) {
     val searchValue by homeScreenUiState.searchValue.collectAsState()
     val isLoading by homeScreenUiState.isLoading.collectAsState()
@@ -59,8 +66,8 @@ fun HomeScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-    ){
-        Row(){
+    ) {
+        Row {
             TextField(
                 value = searchValue,
                 onValueChange = { value ->
@@ -83,8 +90,7 @@ fun HomeScreenContent(
                     keyboardController?.hide()
                 }),
                 colors = TextFieldDefaults.colors(
-                    focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    focusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         }
@@ -103,7 +109,7 @@ fun HomeScreenContent(
                             item?.let { resultSong ->
                                 SearchItemCard(
                                     uiSearchResultSong = resultSong,
-                                    navigateToDetails = { }
+                                    navigateToMediaPlayer = { navigateToMediaPlayer(resultSong.id) }
                                 )
                             }
                         }

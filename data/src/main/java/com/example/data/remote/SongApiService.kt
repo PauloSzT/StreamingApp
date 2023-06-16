@@ -8,9 +8,9 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface SongApiService {
-    @GET("/apiv2/sounds")
+    @GET()
     suspend fun getSongById(
-       @Url url: String
+        @Url url: String
     ): Response<RemoteSongMedia?>
 
     @GET("/apiv2/search/text")

@@ -4,6 +4,7 @@ data class UiSongMedia(
     val id: Int,
     val name: String,
     val duration: Float,
-    val previews: String,
-    val images: String
+    val username: String,
+    val preview: String,
+    val image: String
 )

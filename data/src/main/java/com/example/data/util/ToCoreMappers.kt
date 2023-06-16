@@ -9,8 +9,9 @@ import com.example.data.models.RemoteSongMedia
 
 fun RemoteSongMedia.mapToCoreModel(): CoreSongMedia = CoreSongMedia(
     id = id,
-    name = name,
+    name = name.split(".").first(),
     duration = duration,
+    username = username,
     previews = previews.previewHqMp3,
     images = images.remoteImageWaveFormM
 )
@@ -22,5 +23,6 @@ fun RemoteSearchResult.mapToCoreModel(): CoreSearchResult = CoreSearchResult(
 
 fun RemoteSearchResultSong.mapToCoreModel(): CoreSearchResultSong = CoreSearchResultSong(
     id = id,
-    name = name
+    name = name.split(".").first(),
+    username = username
 )

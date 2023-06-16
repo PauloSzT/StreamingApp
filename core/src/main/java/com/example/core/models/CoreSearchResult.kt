@@ -7,5 +7,6 @@ data class CoreSearchResult(
 
 data class CoreSearchResultSong(
     val id: Int,
-    val name: String
+    val name: String,
+    val username: String
 )

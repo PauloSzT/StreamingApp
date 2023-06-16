@@ -8,6 +8,7 @@ data class RemoteSongMedia(
     val id: Int,
     val name: String,
     val duration: Float,
+    val username: String,
     val previews: RemoteSongPreview,
     val images: RemoteSongImage
 )

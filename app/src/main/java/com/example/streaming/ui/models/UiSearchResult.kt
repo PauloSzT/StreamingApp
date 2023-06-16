@@ -7,5 +7,6 @@ data class UiSearchResult(
 
 data class UiSearchResultSong(
     val id: Int,
-    val name: String
+    val name: String,
+    val username: String
 )

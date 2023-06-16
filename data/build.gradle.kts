@@ -39,7 +39,6 @@ android {
 dependencies {
 
     val daggerHiltVersion = "2.44"
-    val media3Version = "1.0.2"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -63,22 +62,6 @@ dependencies {
 
     // Kotlin serialization
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-
-    // Media3
-    implementation ("androidx.media3:media3-exoplayer:$media3Version")
-    // For DASH playback support with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-dash:$media3Version")
-    // For HLS playback support with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-hls:$media3Version")
-    // For RTSP playback support with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-rtsp:$media3Version")
-    // For ad insertion using the Interactive Media Ads SDK with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-ima:$media3Version")
-    // For scheduling background operations using Jetpack Work's WorkManager with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-workmanager:$media3Version")
-    // For exposing and controlling media sessions
-    implementation("androidx.media3:media3-session:$media3Version")
-
 
     implementation(project(":core"))
 }

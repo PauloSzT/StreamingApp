@@ -12,7 +12,7 @@ class RemoteRepositoryImpl @Inject constructor(private val apiService: SongApiSe
     override suspend fun getSongById(
         songId: Int,
     ): CoreSongMedia? {
-        val response = apiService.getSongById("$songId/?format=json")
+        val response = apiService.getSongById("/apiv2/sounds/$songId/?format=json")
         return response.body()?.mapToCoreModel()
     }
 

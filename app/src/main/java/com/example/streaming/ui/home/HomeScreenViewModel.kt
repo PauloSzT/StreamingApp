@@ -23,7 +23,7 @@ class HomeScreenViewModel @Inject constructor(
     private val searchValue = MutableStateFlow(EMPTY_STRING)
     private val searchValueExecutor = MutableStateFlow(EMPTY_STRING)
     private val paginatedSongProvider = searchValueExecutor.map { query ->
-        if(query.isNotEmpty()){
+        if (query.isNotEmpty()) {
             Pager(
                 initialKey = null,
                 config = PagingConfig(
@@ -34,17 +34,16 @@ class HomeScreenViewModel @Inject constructor(
                 pagingSourceFactory = {
                     SongPagingSource({ isLoading.value = false }) { page ->
                         getSongsBySearchUseCase(
-                            page.toString(),
-                            query
+                            query,
+                            page.toString()
                         )?.mapToUiModel()
                     }
                 }
             ).flow
-        }else{
+        } else {
             null
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
-
 
     val homeScreenUiState = HomeScreenUiState(
         searchValue = searchValue,
