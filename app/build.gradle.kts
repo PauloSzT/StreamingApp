@@ -57,6 +57,7 @@ dependencies {
 
     val daggerHiltVersion = "2.44"
     val media3Version = "1.0.2"
+    val core_version = "1.10.1"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -106,6 +107,11 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-workmanager:$media3Version")
     // For exposing and controlling media sessions
     implementation("androidx.media3:media3-session:$media3Version")
+
+    // Notifications
+    implementation("androidx.core:core-ktx:$core_version")
+    implementation("androidx.media:media:1.6.0")
+
 
     implementation(project(":core"))
     implementation(project(":data"))

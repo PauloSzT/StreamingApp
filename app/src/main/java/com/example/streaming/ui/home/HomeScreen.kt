@@ -2,6 +2,7 @@ package com.example.streaming.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,10 +27,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -38,6 +41,8 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.example.streaming.R
 import com.example.streaming.ui.navigation.NavItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun HomeScreen(
@@ -61,6 +66,8 @@ fun HomeScreenContent(
     val keyboardController = LocalSoftwareKeyboardController.current
     val paginatedSongProvider by homeScreenUiState.paginatedSongProvider.collectAsState()
     val paginatedSongs = paginatedSongProvider?.collectAsLazyPagingItems()
+    val orientation = LocalConfiguration.current.orientation
+    val isHorizontal = orientation != Orientation.Horizontal.ordinal
 
     Column(
         modifier = Modifier
@@ -99,22 +106,40 @@ fun HomeScreenContent(
                 LoadingScreen()
             } else {
                 if (paginatedSongs != null && paginatedSongs.itemCount > 0) {
-                    LazyVerticalGrid(columns = GridCells.Fixed(1)) {
-                        items(
-                            count = paginatedSongs.itemCount,
-                            key = paginatedSongs.itemKey(),
-                            contentType = paginatedSongs.itemContentType()
-                        ) { index ->
-                            val item = paginatedSongs[index]
-                            item?.let { resultSong ->
-                                SearchItemCard(
-                                    uiSearchResultSong = resultSong,
-                                    navigateToMediaPlayer = { navigateToMediaPlayer(resultSong.id) }
-                                )
+                    if(isHorizontal){
+                        LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+                            items(
+                                count = paginatedSongs.itemCount,
+                                key = paginatedSongs.itemKey(),
+                                contentType = paginatedSongs.itemContentType()
+                            ) { index ->
+                                val item = paginatedSongs[index]
+                                item?.let { resultSong ->
+                                    SearchItemCard(
+                                        uiSearchResultSong = resultSong,
+                                        navigateToMediaPlayer = { navigateToMediaPlayer(resultSong.id) }
+                                    )
+                                }
+                            }
+                        }
+                    }else{
+                        LazyVerticalGrid(columns = GridCells.Fixed(1)) {
+                            items(
+                                count = paginatedSongs.itemCount,
+                                key = paginatedSongs.itemKey(),
+                                contentType = paginatedSongs.itemContentType()
+                            ) { index ->
+                                val item = paginatedSongs[index]
+                                item?.let { resultSong ->
+                                    SearchItemCard(
+                                        uiSearchResultSong = resultSong,
+                                        navigateToMediaPlayer = { navigateToMediaPlayer(resultSong.id) }
+                                    )
+                                }
                             }
                         }
                     }
-                } else {
+                }else {
                     NoResult()
                 }
             }
@@ -149,4 +174,18 @@ fun NoResult() {
     ) {
         Text(text = stringResource(id = R.string.no_search_results))
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreen(){
+
+    val homeScreenUiState = HomeScreenUiState(
+        searchValue = MutableStateFlow("rock"),
+        isLoading = MutableStateFlow(false),
+        paginatedSongProvider = (MutableStateFlow(flowOf())),
+        onQueryChange = {},
+        onImeActionClick = {}
+    )
+    HomeScreenContent(homeScreenUiState = homeScreenUiState , navigateToMediaPlayer = {} )
 }

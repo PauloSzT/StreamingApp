@@ -1,6 +1,7 @@
 package com.example.streaming.ui.mediaplayer
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.example.core.usecases.remote.getsongbyidusecase.GetSongByIdUseCase
+import com.example.streaming.ui.notification.CustomMediaService
 import com.example.streaming.ui.utils.mapToUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -21,7 +23,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @UnstableApi
 @HiltViewModel
@@ -44,6 +45,12 @@ class MediaPlayerScreenViewModel @Inject constructor(
             player.setMediaSource(mediaSource)
             player.playWhenReady = true
             player.prepare()
+            val mediaIntent = Intent(context, CustomMediaService::class.java).also {
+                it.putExtra("action", "play")
+                it.putExtra("songName", songMedia.name)
+                it.putExtra("author", songMedia.username)
+            }
+            context.startForegroundService(mediaIntent)
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
@@ -57,7 +64,6 @@ class MediaPlayerScreenViewModel @Inject constructor(
     )
 
     init {
-
         viewModelScope.launch {
             while (true) {
                 delay(100)
@@ -71,7 +77,6 @@ class MediaPlayerScreenViewModel @Inject constructor(
                 isCurrentlyPlaying.value = isPlaying
             }
         })
-
     }
 
     private fun playBtnClick() {

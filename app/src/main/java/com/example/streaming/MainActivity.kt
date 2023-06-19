@@ -3,6 +3,7 @@ package com.example.streaming
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,15 +28,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.streaming.ui.navigation.NavigationGraph
-import com.example.streaming.ui.theme.StreamingAppTheme
 import com.example.streaming.ui.navigation.NavItem
 import com.example.streaming.ui.navigation.NavItem.Companion.title
+import com.example.streaming.ui.navigation.NavigationGraph
+import com.example.streaming.ui.theme.StreamingAppTheme
 import com.example.streaming.ui.utils.UiConstants.EMPTY_STRING
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainActivityViewModel by viewModels()
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,5 +94,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+            viewModel.stopMusicPlay()
     }
 }

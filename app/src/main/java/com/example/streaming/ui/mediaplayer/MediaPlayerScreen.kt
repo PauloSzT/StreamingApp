@@ -31,10 +31,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.streaming.R
+import com.example.streaming.ui.models.UiSongMedia
+import com.example.streaming.ui.theme.StreamingAppTheme
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun MediaPlayerScreen(
@@ -59,6 +63,7 @@ fun MediaPlayerScreenContent(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
@@ -99,14 +104,14 @@ fun MediaPlayerScreenContent(
                     }
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                modifier = Modifier.fillMaxHeight(0.15f),
+                modifier = Modifier.padding(top = 24.dp),
                 text = songDetail?.name ?: "songName",
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.height(24.dp))
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = {
@@ -114,10 +119,9 @@ fun MediaPlayerScreenContent(
                 },
                 elevation = ButtonDefaults.buttonElevation(10.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-                modifier = Modifier.fillMaxHeight(0.25f),
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    contentColor = MaterialTheme.colorScheme.primary,
+                )
             ) {
                 Icon(
                     painter = painterResource(
@@ -125,14 +129,13 @@ fun MediaPlayerScreenContent(
                     ),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.6f)
                     .height(48.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -143,15 +146,15 @@ fun MediaPlayerScreenContent(
                     },
                     elevation = ButtonDefaults.buttonElevation(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.primary,
                     )
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_backward),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
                     )
                 }
                 Spacer(modifier = Modifier.width(60.dp))
@@ -161,18 +164,43 @@ fun MediaPlayerScreenContent(
                     },
                     elevation = ButtonDefaults.buttonElevation(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.primary,
                     )
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_forward),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
                     )
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MediaPlayerScreenPreview() {
+    val mediaPlayerUiState = MediaPlayerUiState(
+        songDetail = MutableStateFlow(
+            UiSongMedia(
+                id = 641428,
+                name = "Reggae synthesizer dance",
+                duration = 89f,
+                username = "Duisterwho",
+                preview = "",
+                image = "https://cdn.freesound.org/displays/641/641428_13590673_wave_M.png"
+            )
+        ),
+        isCurrentlyPlaying = MutableStateFlow(true),
+        seekbarPosition = MutableStateFlow(1f),
+        playBtnClick = {},
+        skipBtnClick = {},
+        rewindBtnClick = {}
+    )
+    StreamingAppTheme {
+        MediaPlayerScreenContent(mediaPlayerUiState = mediaPlayerUiState)
     }
 }
