@@ -19,10 +19,10 @@ class HomeScreenViewModel @Inject constructor(
     private val getSongsBySearchUseCase: GetSongsBySearchUseCase
 ) : ViewModel() {
 
-    private val isLoading = MutableStateFlow(false)
+    val isLoading = MutableStateFlow(false)
     private val searchValue = MutableStateFlow(EMPTY_STRING)
-    private val searchValueExecutor = MutableStateFlow(EMPTY_STRING)
-    private val paginatedSongProvider = searchValueExecutor.map { query ->
+    val searchValueExecutor = MutableStateFlow(EMPTY_STRING)
+    val paginatedSongProvider = searchValueExecutor.map { query ->
         if (query.isNotEmpty()) {
             Pager(
                 initialKey = null,
@@ -57,7 +57,7 @@ class HomeScreenViewModel @Inject constructor(
         searchValue.value = if (query.length == 1) query.trim() else query
     }
 
-    private fun onImeActionClick() {
+    fun onImeActionClick() {
         isLoading.value = true
         searchValueExecutor.value = searchValue.value
     }
