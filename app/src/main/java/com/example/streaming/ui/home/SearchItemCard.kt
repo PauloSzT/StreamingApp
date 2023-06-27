@@ -18,11 +18,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.streaming.R
 import com.example.streaming.ui.models.UiSearchResultSong
+import com.example.streaming.ui.utils.TestConstants.RESULT_ITEM_ROW
 
 @Composable
 fun SearchItemCard(
@@ -30,7 +32,7 @@ fun SearchItemCard(
     navigateToMediaPlayer: (Int) -> Unit
 ) {
     Surface(
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier.padding(4.dp).testTag(RESULT_ITEM_ROW)
     ) {
         Card(
             modifier = Modifier

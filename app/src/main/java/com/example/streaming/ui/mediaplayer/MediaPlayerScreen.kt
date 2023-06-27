@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +39,12 @@ import coil.compose.AsyncImage
 import com.example.streaming.R
 import com.example.streaming.ui.models.UiSongMedia
 import com.example.streaming.ui.theme.StreamingAppTheme
+import com.example.streaming.ui.utils.TestConstants.BTN_PLAY
+import com.example.streaming.ui.utils.TestConstants.BTN_REWIND
+import com.example.streaming.ui.utils.TestConstants.BTN_SKIP
+import com.example.streaming.ui.utils.TestConstants.SONG_IMAGE
+import com.example.streaming.ui.utils.TestConstants.SONG_NAME
+import com.example.streaming.ui.utils.TestConstants.SONG_SLIDER
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -73,12 +80,13 @@ fun MediaPlayerScreenContent(
             ) {
                 AsyncImage(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize().testTag(SONG_IMAGE),
                     contentScale = ContentScale.FillBounds,
                     model = songDetail?.image ?: "",
                     contentDescription = null
                 )
                 Slider(
+                    modifier = Modifier.testTag(SONG_SLIDER),
                     value = seekbarPosition,
                     onValueChange = {},
                     enabled = false,
@@ -106,7 +114,7 @@ fun MediaPlayerScreenContent(
             }
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                modifier = Modifier.padding(top = 24.dp),
+                modifier = Modifier.padding(top = 24.dp).testTag(SONG_NAME),
                 text = songDetail?.name ?: "songName",
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleMedium,
@@ -114,6 +122,7 @@ fun MediaPlayerScreenContent(
             )
             Spacer(modifier = Modifier.height(24.dp))
             Button(
+                modifier = Modifier.testTag(BTN_PLAY),
                 onClick = {
                     mediaPlayerUiState.playBtnClick()
                 },
@@ -141,6 +150,7 @@ fun MediaPlayerScreenContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
+                    modifier = Modifier.testTag(BTN_REWIND),
                     onClick = {
                         mediaPlayerUiState.rewindBtnClick()
                     },
@@ -159,6 +169,7 @@ fun MediaPlayerScreenContent(
                 }
                 Spacer(modifier = Modifier.width(60.dp))
                 Button(
+                    modifier = Modifier.testTag(BTN_SKIP),
                     onClick = {
                         mediaPlayerUiState.skipBtnClick()
                     },

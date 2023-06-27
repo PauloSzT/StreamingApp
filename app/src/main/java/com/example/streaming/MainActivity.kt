@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +33,7 @@ import com.example.streaming.ui.navigation.NavItem
 import com.example.streaming.ui.navigation.NavItem.Companion.title
 import com.example.streaming.ui.navigation.NavigationGraph
 import com.example.streaming.ui.theme.StreamingAppTheme
+import com.example.streaming.ui.utils.TestConstants.BACK_BTN
 import com.example.streaming.ui.utils.UiConstants.EMPTY_STRING
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,7 +70,9 @@ class MainActivity : ComponentActivity() {
                                 },
                                 navigationIcon = {
                                     if (displayBackIcon) {
-                                        IconButton(onClick = { navHostController.navigateUp() }) {
+                                        IconButton(
+                                            modifier = Modifier.testTag(BACK_BTN),
+                                            onClick = { navHostController.navigateUp() }) {
                                             Icon(Icons.Filled.ArrowBack, "Back")
                                         }
                                     }

@@ -1,10 +1,12 @@
 package com.example.streaming.ui.home
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.core.usecases.remote.getsongsbysearchusecase.GetSongsBySearchUseCase
+import com.example.streaming.App
 import com.example.streaming.ui.utils.UiConstants.EMPTY_STRING
 import com.example.streaming.ui.utils.mapToUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val getSongsBySearchUseCase: GetSongsBySearchUseCase
+    private val getSongsBySearchUseCase: GetSongsBySearchUseCase,
+    private val app: Application
 ) : ViewModel() {
 
     val isLoading = MutableStateFlow(false)
@@ -32,7 +35,10 @@ class HomeScreenViewModel @Inject constructor(
                     prefetchDistance = 1
                 ),
                 pagingSourceFactory = {
-                    SongPagingSource({ isLoading.value = false }) { page ->
+                    SongPagingSource({
+                        isLoading.value = false
+                        (app as App).stopFetcher()
+                    }) { page ->
                         getSongsBySearchUseCase(
                             query,
                             page.toString()
@@ -57,7 +63,8 @@ class HomeScreenViewModel @Inject constructor(
         searchValue.value = if (query.length == 1) query.trim() else query
     }
 
-    fun onImeActionClick() {
+    private fun onImeActionClick() {
+        (app as App).startFetcher()
         isLoading.value = true
         searchValueExecutor.value = searchValue.value
     }

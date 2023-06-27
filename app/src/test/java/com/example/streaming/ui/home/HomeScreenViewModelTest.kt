@@ -1,5 +1,6 @@
 package com.example.streaming.ui.home
 
+import android.app.Application
 import com.example.core.models.CoreSearchResult
 import com.example.core.models.CoreSearchResultSong
 import com.example.core.usecases.remote.getsongsbysearchusecase.GetSongsBySearchUseCase
@@ -60,7 +61,8 @@ class HomeScreenViewModelTest {
         } returns mockedCoreSearchResult
 
         viewModel = HomeScreenViewModel(
-            getSongsBySearchUseCase
+            getSongsBySearchUseCase,
+            app = Application()
         )
         uiState = viewModel.homeScreenUiState
     }

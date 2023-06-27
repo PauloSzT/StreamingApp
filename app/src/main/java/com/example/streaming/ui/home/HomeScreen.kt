@@ -29,6 +29,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -41,6 +42,10 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.example.streaming.R
 import com.example.streaming.ui.navigation.NavItem
+import com.example.streaming.ui.utils.TestConstants
+import com.example.streaming.ui.utils.TestConstants.NO_RESULTS_TEXT
+import com.example.streaming.ui.utils.TestConstants.RESULTS_LAZY_VERTICAL_GRID
+import com.example.streaming.ui.utils.TestConstants.SEARCH_TEXT_FIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
@@ -90,7 +95,9 @@ fun HomeScreenContent(
                         contentDescription = null
                     )
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(SEARCH_TEXT_FIELD),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
                     homeScreenUiState.onImeActionClick()
@@ -106,8 +113,10 @@ fun HomeScreenContent(
                 LoadingScreen()
             } else {
                 if (paginatedSongs != null && paginatedSongs.itemCount > 0) {
-                    if(isHorizontal){
-                        LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+                    if (isHorizontal) {
+                        LazyVerticalGrid(
+                            modifier = Modifier.testTag(RESULTS_LAZY_VERTICAL_GRID),
+                            columns = GridCells.Fixed(4)) {
                             items(
                                 count = paginatedSongs.itemCount,
                                 key = paginatedSongs.itemKey(),
@@ -122,8 +131,10 @@ fun HomeScreenContent(
                                 }
                             }
                         }
-                    }else{
-                        LazyVerticalGrid(columns = GridCells.Fixed(1)) {
+                    } else {
+                        LazyVerticalGrid(
+                            modifier = Modifier.testTag(RESULTS_LAZY_VERTICAL_GRID),
+                            columns = GridCells.Fixed(1)) {
                             items(
                                 count = paginatedSongs.itemCount,
                                 key = paginatedSongs.itemKey(),
@@ -139,7 +150,7 @@ fun HomeScreenContent(
                             }
                         }
                     }
-                }else {
+                } else {
                     NoResult()
                 }
             }
@@ -170,7 +181,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 fun NoResult() {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().testTag(NO_RESULTS_TEXT)
     ) {
         Text(text = stringResource(id = R.string.no_search_results))
     }
@@ -178,7 +189,7 @@ fun NoResult() {
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreen(){
+fun HomeScreen() {
 
     val homeScreenUiState = HomeScreenUiState(
         searchValue = MutableStateFlow("rock"),
@@ -187,5 +198,5 @@ fun HomeScreen(){
         onQueryChange = {},
         onImeActionClick = {}
     )
-    HomeScreenContent(homeScreenUiState = homeScreenUiState , navigateToMediaPlayer = {} )
+    HomeScreenContent(homeScreenUiState = homeScreenUiState, navigateToMediaPlayer = {})
 }
