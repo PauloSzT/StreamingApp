@@ -32,6 +32,7 @@ class MediaPlayerScreenViewModel @Inject constructor(
     context: Application,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    var seekBarShouldRun = true
     private val songId = savedStateHandle.getStateFlow("songId", 0)
     private val isCurrentlyPlaying = MutableStateFlow(false)
     private val seekbarPosition = MutableStateFlow(0f)
@@ -65,12 +66,11 @@ class MediaPlayerScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            while (true) {
+            while (seekBarShouldRun) {
                 delay(100)
                 seekbarPosition.value = player.currentPosition.toFloat()
             }
         }
-
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)

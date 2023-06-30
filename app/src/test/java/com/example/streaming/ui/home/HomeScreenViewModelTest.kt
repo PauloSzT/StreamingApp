@@ -1,9 +1,10 @@
 package com.example.streaming.ui.home
 
-import android.app.Application
 import com.example.core.models.CoreSearchResult
 import com.example.core.models.CoreSearchResultSong
 import com.example.core.usecases.remote.getsongsbysearchusecase.GetSongsBySearchUseCase
+import com.example.streaming.App
+import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,8 @@ class HomeScreenViewModelTest {
     private lateinit var uiState: HomeScreenUiState
 
     private val getSongsBySearchUseCase: GetSongsBySearchUseCase = mockk()
-
+    private val app: App = mockk()
+    private val mockedSearchValueExecutor = "TestingSearchValueExecutor"
     private val mockedCoreSearchResult = CoreSearchResult(
         next = "1",
         results = listOf(
@@ -47,22 +49,21 @@ class HomeScreenViewModelTest {
         )
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() = runTest {
         Dispatchers.setMain(testDispatcher)
-
         coEvery {
             getSongsBySearchUseCase(
                 any(), any()
             )
         } returns mockedCoreSearchResult
-
         viewModel = HomeScreenViewModel(
             getSongsBySearchUseCase,
-            app = Application()
+            app
         )
         uiState = viewModel.homeScreenUiState
     }
@@ -80,7 +81,7 @@ class HomeScreenViewModelTest {
         }
 
     @Test
-    fun `If users types an space as first character, is omited`() =
+    fun `If users types an space as first character, is omitted`() =
         runTest {
             val collectJob = launch(testDispatcher) {
                 viewModel.homeScreenUiState.searchValue.collect()
@@ -91,38 +92,56 @@ class HomeScreenViewModelTest {
             collectJob.cancel()
         }
 
-//    @Test
-//    fun `paginatedSongProvider returns non null PagerInstance`() =
-//        runTest {
-//            viewModel.searchValueExecutor.value = "rock"
-//            val paginatedSongProvider = viewModel.paginatedSongProvider.value
-//            assertNotNull(paginatedSongProvider)
-//        }
+    @Test
+    fun `paginatedSongProvider returns non null PagerInstance`() =
+        runTest {
+            val collectJob = launch(testDispatcher) {
+                viewModel.homeScreenUiState.paginatedSongProvider
+            }
+            val newSongPagingSource = getSongsBySearchUseCase(mockedSearchValueExecutor,"1")
+            assertEquals(mockedCoreSearchResult,newSongPagingSource)
+            collectJob.cancel()
+        }
 
     @Test
     fun `paginatedSongProvider returns Null when SearchValue is empty`() =
         runTest {
             viewModel.searchValueExecutor.value = ""
-            val paginatedSongProvider = viewModel.paginatedSongProvider.value
+            val paginatedSongProvider = viewModel.homeScreenUiState.paginatedSongProvider.value
             assertNull(paginatedSongProvider)
         }
 
-//    @Test
-//    fun onImeActionClick_shouldSetIsLoadingToTrueAndSearchValueExecutorToSearchQuery() =
-//        runTest {
-//            val collectJob = launch(testDispatcher) {
-//                viewModel.homeScreenUiState.searchValue.collect()
-//            }
-//            // Given
-//            val searchQuery = "test"
-//            viewModel.searchValueExecutor.value = searchQuery
-//            // When
-//            viewModel.onImeActionClick()
-//            val updateQuery = uiState.searchValue.value
-//            // Then
-//            coVerify(getSongsBySearchUseCase(searchQuery, "1"))
-//            assertThat(viewModel.isLoading.value).isTrue()
-//            assertEquals(searchQuery, updateQuery)
-//            collectJob.cancel()
-//        }
+    @Test
+    fun `When onImeActionClick is called, sets IsLoading to true`() {
+        viewModel.homeScreenUiState.onImeActionClick()
+        assertEquals(true, viewModel.homeScreenUiState.isLoading.value)
+    }
+
+    @Test
+    fun `When onImeActionClick is called, sets SearchValueExecutor to SearchValue`() =
+        runTest {
+            val collectJob = launch(testDispatcher) {
+                viewModel.homeScreenUiState.searchValue.collect()
+            }
+            viewModel.homeScreenUiState.onQueryChange("TestQuery1")
+            val newQuery = viewModel.homeScreenUiState.searchValue.first()
+            viewModel.homeScreenUiState.onImeActionClick()
+            assertThat(viewModel.searchValueExecutor.value).isEqualTo(newQuery)
+            collectJob.cancel()
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `paginatedAnimeProvider is working`() =
+        runTest {
+            val collectJob = launch(testDispatcher) {
+                viewModel.homeScreenUiState.paginatedSongProvider.collect()
+            }
+            val mockedQuery = mockedSearchValueExecutor
+            assertEquals(
+                mockedCoreSearchResult,
+                getSongsBySearchUseCase(mockedQuery , "1")
+            )
+            collectJob.cancel()
+        }
 }

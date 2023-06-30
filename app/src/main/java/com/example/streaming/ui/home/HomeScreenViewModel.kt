@@ -22,10 +22,10 @@ class HomeScreenViewModel @Inject constructor(
     private val app: Application
 ) : ViewModel() {
 
-    val isLoading = MutableStateFlow(false)
+    private val isLoading = MutableStateFlow(false)
     private val searchValue = MutableStateFlow(EMPTY_STRING)
     val searchValueExecutor = MutableStateFlow(EMPTY_STRING)
-    val paginatedSongProvider = searchValueExecutor.map { query ->
+    private val paginatedSongProvider = searchValueExecutor.map { query ->
         if (query.isNotEmpty()) {
             Pager(
                 initialKey = null,
